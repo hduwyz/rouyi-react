@@ -1,13 +1,11 @@
 
 import './App.css';
-import LoginMain from './login' 
-import { Button } from 'antd';
+import LoginMain from './views/login'
 
 function App() {
   return (
     <div className="App">
       <LoginMain></LoginMain>
-      <Button type="primary">Button</Button>
     </div>
   );
 }
