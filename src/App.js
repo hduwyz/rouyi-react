@@ -1,11 +1,11 @@
 
 import './App.css';
-import LoginMain from './views/login'
+import Login from './views/login'
 
 function App() {
   return (
     <div className="App">
-      <LoginMain></LoginMain>
+      <Login></Login>
     </div>
   );
 }

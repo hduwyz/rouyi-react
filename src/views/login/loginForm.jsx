@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react'
 import { Input, Checkbox, Button, Form, Row, Col } from 'antd';
 import { UserOutlined, LockOutlined, VerifiedOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
-import { getCodeImg } from '../api/login';
+import { getCodeImg } from '../../api/login';
 import './login.css'
 
-class LoginMain extends PureComponent {
+class LoginForm extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -16,6 +16,10 @@ class LoginMain extends PureComponent {
         // componentWillMount在渲染过程中可能会执行多次
         console.info("============")
         this.getCaptcha()
+    }
+
+    toggleForm = () => {
+        this.props.sc('register')
     }
 
     onFinish = (values) => {
@@ -35,7 +39,7 @@ class LoginMain extends PureComponent {
 
     render() {
         return (
-            <div className="login">
+            <div className="login_form">
                 <Form
                     name="basic"
                     initialValues={{
@@ -103,7 +107,7 @@ class LoginMain extends PureComponent {
                             </Col>
                             <Col span={8}>
                                 <Form.Item name='submit_login' wrapperCol={{ offset: 0, span: 6 }}>
-                                    <Button type="primary" htmlType="submit" href=''>
+                                    <Button type="primary" onClick={this.toggleForm}>
                                         注册
                                     </Button>
                                 </Form.Item>
@@ -119,4 +123,4 @@ class LoginMain extends PureComponent {
     }
 }
 
-export default LoginMain
+export default LoginForm
