@@ -1,21 +1,22 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import { Input, Checkbox, Button, Form } from 'antd';
 import { UserOutlined, LockOutlined, VerifiedOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { getCodeImg } from '../api/login';
 import './login.css'
 
-class LoginMain extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            captcha_img: ''
-        }
-    }
+class LoginMain extends PureComponent {
+    // constructor(props) {
+    //     super(props);
+    //     this.state = {
+    //         captcha_img: ''
+    //     }
+    // }
 
-    componentDidMount() {
-        // componentWillMount在渲染过程中可能会执行多次
-        this.getCaptcha()
-    }
+    // componentDidMount() {
+    //     // componentWillMount在渲染过程中可能会执行多次
+    //     console.info("============")
+    //     this.getCaptcha()
+    // }
 
     onFinish = (values) => {
         console.log('Success:', values);
@@ -28,14 +29,15 @@ class LoginMain extends Component {
     getCaptcha = async () => {
         const res = await getCodeImg();
         if (res.status === 200) {
-            this.setState({ captcha_img: "data:image/gif;base64," + res.data.img })
+            return "data:image/gif;base64," + res.data.img
         }
+        return ""
     }
 
     render() {
+        let captcha_img = this.getCaptcha()
         return (
             <div className="login">
-                <h3 className="title">若依后台管理系统</h3>
                 <Form
                     name="basic"
                     initialValues={{
@@ -45,6 +47,12 @@ class LoginMain extends Component {
                     onFinishFailed={this.onFinishFailed}
                     autoComplete="off"
                 >
+
+                    <Form.Item
+                        name="title"
+                    >
+                        <h3 className="title">若依后台管理系统</h3>
+                    </Form.Item>
                     <Form.Item
                         name="username"
                         rules={[
@@ -84,7 +92,7 @@ class LoginMain extends Component {
                             name="captcha_img"
                             style={{ display: 'inline-block', margin: '0 8px' }}
                         >
-                            <img src={this.state.captcha_img} style={{ width: '50%' }} alt="" />
+                            <img src={captcha_img} style={{ width: '50%' }} alt="" />
                         </Form.Item>
                     </Form.Item>
                     <Form.Item
