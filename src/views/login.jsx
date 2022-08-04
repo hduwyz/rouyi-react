@@ -1,22 +1,22 @@
 import React, { PureComponent } from 'react'
-import { Input, Checkbox, Button, Form } from 'antd';
+import { Input, Checkbox, Button, Form, Row, Col } from 'antd';
 import { UserOutlined, LockOutlined, VerifiedOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { getCodeImg } from '../api/login';
 import './login.css'
 
 class LoginMain extends PureComponent {
-    // constructor(props) {
-    //     super(props);
-    //     this.state = {
-    //         captcha_img: ''
-    //     }
-    // }
+    constructor(props) {
+        super(props);
+        this.state = {
+            captcha_img: ''
+        }
+    }
 
-    // componentDidMount() {
-    //     // componentWillMount在渲染过程中可能会执行多次
-    //     console.info("============")
-    //     this.getCaptcha()
-    // }
+    componentDidMount() {
+        // componentWillMount在渲染过程中可能会执行多次
+        console.info("============")
+        this.getCaptcha()
+    }
 
     onFinish = (values) => {
         console.log('Success:', values);
@@ -29,13 +29,11 @@ class LoginMain extends PureComponent {
     getCaptcha = async () => {
         const res = await getCodeImg();
         if (res.status === 200) {
-            return "data:image/gif;base64," + res.data.img
+            this.setState({ captcha_img: "data:image/gif;base64," + res.data.img })
         }
-        return ""
     }
 
     render() {
-        let captcha_img = this.getCaptcha()
         return (
             <div className="login">
                 <Form
@@ -47,12 +45,7 @@ class LoginMain extends PureComponent {
                     onFinishFailed={this.onFinishFailed}
                     autoComplete="off"
                 >
-
-                    <Form.Item
-                        name="title"
-                    >
-                        <h3 className="title">若依后台管理系统</h3>
-                    </Form.Item>
+                    <h3 className="title">若依后台管理系统</h3>
                     <Form.Item
                         name="username"
                         rules={[
@@ -62,7 +55,7 @@ class LoginMain extends PureComponent {
                             },
                         ]}
                     >
-                        <Input size="large" placeholder="用户名" prefix={<UserOutlined />} />
+                        <Input placeholder="用户名" prefix={<UserOutlined />} />
                     </Form.Item>
 
                     <Form.Item
@@ -76,36 +69,50 @@ class LoginMain extends PureComponent {
                     >
                         <Input.Password placeholder="密码" prefix={<LockOutlined />} iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)} />
                     </Form.Item>
-
-                    <Form.Item style={{ marginBottom: 0 }}>
-                        <Form.Item
-                            name="captcha_code"
-                            rules={[{
-                                required: true,
-                                message: 'Please input your captcha!'
-                            }]}
-                            style={{ display: 'inline-block' }}
-                        >
-                            <Input size="large" placeholder="验证码" prefix={<VerifiedOutlined />} />
-                        </Form.Item>
-                        <Form.Item
-                            name="captcha_img"
-                            style={{ display: 'inline-block', margin: '0 8px' }}
-                        >
-                            <img src={captcha_img} style={{ width: '50%' }} alt="" />
-                        </Form.Item>
+                    <Form.Item >
+                        <Row gutter={8}>
+                            <Col span={16}>
+                                <Form.Item
+                                    name="captcha"
+                                    noStyle
+                                    rules={[{ required: true, message: 'Please input the captcha you got!' }]}
+                                >
+                                    <Input placeholder="验证码" prefix={<VerifiedOutlined />} />
+                                </Form.Item>
+                            </Col>
+                            <Col span={8}>
+                                <img src={this.state.captcha_img} style={{ width: '90px', height: '32px' }} alt='' onClick={this.getCaptcha} />
+                            </Col>
+                        </Row>
                     </Form.Item>
                     <Form.Item
                         name="remember"
-                        valuePropName="checked">
+                        valuePropName="checked"
+                        wrapperCol={{ offset: 0, span: 8 }}
+                    >
                         <Checkbox>记住密码</Checkbox>
                     </Form.Item>
+                    <Form.Item>
+                        <Row gutter={8}>
+                            <Col span={16}>
+                                <Form.Item name='submit_login' wrapperCol={{ offset: 0, span: 6 }}>
+                                    <Button type="primary" htmlType="submit">
+                                        登录
+                                    </Button>
+                                </Form.Item>
+                            </Col>
+                            <Col span={8}>
+                                <Form.Item name='submit_login' wrapperCol={{ offset: 0, span: 6 }}>
+                                    <Button type="primary" htmlType="submit" href=''>
+                                        注册
+                                    </Button>
+                                </Form.Item>
+                            </Col>
+                        </Row>
 
-                    <Form.Item name='submit_login'>
-                        <Button type="primary" htmlType="submit">
-                            登录
-                        </Button>
+
                     </Form.Item>
+
                 </Form>
             </div>
         )
