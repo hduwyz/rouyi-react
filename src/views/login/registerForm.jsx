@@ -40,6 +40,7 @@ class RegisterForm extends PureComponent {
                                 message: 'Please input your password!',
                             },
                         ]}
+                        style={{ width: '300px' }}
                     >
                         <Input.Password placeholder="输入密码" prefix={<LockOutlined />} iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)} />
                     </Form.Item>

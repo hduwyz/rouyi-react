@@ -4,8 +4,8 @@ import RegisterForm from './registerForm'
 
 export default class Login extends PureComponent {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             formType: "login"
         }

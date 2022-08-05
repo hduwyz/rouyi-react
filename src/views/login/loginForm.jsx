@@ -1,14 +1,16 @@
 import React, { PureComponent } from 'react'
 import { Input, Checkbox, Button, Form, Row, Col } from 'antd';
 import { UserOutlined, LockOutlined, VerifiedOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
-import { getCodeImg } from '../../api/login';
+import { getCodeImg, login } from '../../api/login';
 import './login.css'
 
 class LoginForm extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            captcha_img: ''
+            captcha_img: '',
+            remember: true,
+            uuid: ''
         }
     }
 
@@ -22,8 +24,14 @@ class LoginForm extends PureComponent {
         this.props.sc('register')
     }
 
-    onFinish = (values) => {
-        console.log('Success:', values);
+    onFinish = async (values) => {
+        let uuid = this.state.uuid
+        const res = await login(values.username, values.password, values.captcha, uuid);
+        console.info(res)
+        if (res.status === 200 && res.data.code === 200) {
+            alert("登录成功")
+            this.$router.push({ path: '/home' })
+        }
     };
 
     onFinishFailed = (errorInfo) => {
@@ -33,18 +41,36 @@ class LoginForm extends PureComponent {
     getCaptcha = async () => {
         const res = await getCodeImg();
         if (res.status === 200) {
-            this.setState({ captcha_img: "data:image/gif;base64," + res.data.img })
+            this.setState({
+                captcha_img: "data:image/gif;base64," + res.data.img,
+                uuid: res.data.uuid
+            })
         }
     }
 
+    getChecked = () => {
+        let value = !this.state.remember
+        console.log(value)
+        this.setState({
+            remember: value
+        })
+    }
+
     render() {
+
+
         return (
             <div className="login_form">
                 <Form
                     name="basic"
-                    initialValues={{
-                        remember: true,
-                    }}
+                    initialValues={
+                        {
+                            username: 'admin',
+                            password: 'admin123',
+                            captcha: '',
+                            remember: this.state.remember
+                        }
+                    }
                     onFinish={this.onFinish}
                     onFinishFailed={this.onFinishFailed}
                     autoComplete="off"
@@ -52,6 +78,7 @@ class LoginForm extends PureComponent {
                     <h3 className="title">若依后台管理系统</h3>
                     <Form.Item
                         name="username"
+                        valuePropName="defaultValue"
                         rules={[
                             {
                                 required: true,
@@ -94,7 +121,7 @@ class LoginForm extends PureComponent {
                         valuePropName="checked"
                         wrapperCol={{ offset: 0, span: 8 }}
                     >
-                        <Checkbox>记住密码</Checkbox>
+                        <Checkbox onChange={this.getChecked}>记住密码</Checkbox>
                     </Form.Item>
                     <Form.Item>
                         <Row gutter={8}>
@@ -106,7 +133,7 @@ class LoginForm extends PureComponent {
                                 </Form.Item>
                             </Col>
                             <Col span={8}>
-                                <Form.Item name='submit_login' wrapperCol={{ offset: 0, span: 6 }}>
+                                <Form.Item name='submit_register' wrapperCol={{ offset: 0, span: 6 }}>
                                     <Button type="primary" onClick={this.toggleForm}>
                                         注册
                                     </Button>
